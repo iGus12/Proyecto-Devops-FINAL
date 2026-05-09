@@ -19,16 +19,17 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build y Push de la Imagen Docker
-        run: |
-          # Construimos la imagen usando el Dockerfile de tu carpeta
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/back-ventas:latest ./Springboot-API-REST
-          docker push ${{ secrets.DOCKER_USERNAME }}/back-ventas:latest
+        uses: docker/build-push-action@v4
+        with:
+          context: ./back-Ventas_SpringBoot/Springboot-API-REST
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/back-ventas:latest
 
       - name: Despliegue en EC2 vía SSH (IE4 e IE7)
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST_BACK }}
-          username: ec2-user
+          username: ${{ secrets.EC2_USERNAME }} # Usa el secreto que tiene 'ubuntu'
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             # Descargamos la nueva imagen y reiniciamos el contenedor
