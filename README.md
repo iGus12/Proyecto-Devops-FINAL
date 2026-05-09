@@ -2,17 +2,17 @@
 
 ## Descripción general
 
-Este proyecto corresponde a la Evaluación Parcial N°2 de la asignatura Introducción a Herramientas DevOps. La solución implementa una aplicación compuesta por un frontend desarrollado con React y dos microservicios backend desarrollados con Spring Boot: Ventas y Despachos.
+Este repositorio contiene el trabajo realizado para la Evaluación Parcial N°2 de la asignatura Introducción a Herramientas DevOps.
 
-El objetivo principal fue contenedorizarlos con Docker, levantar el stack mediante Docker Compose, aplicar persistencia de datos con volúmenes Docker y automatizar el despliegue en AWS EC2 usando GitHub Actions.
+El proyecto está compuesto por un frontend desarrollado con React y dos microservicios backend en Spring Boot: Ventas y Despachos. Para esta entrega se preparó la aplicación para ejecutarse con Docker, levantar los servicios mediante Docker Compose, mantener datos persistentes con volúmenes y automatizar el despliegue en AWS EC2 usando GitHub Actions.
 
 ## Estructura del repositorio
 
-- `front_despacho/`: frontend desarrollado con React y Vite.
-- `back-Ventas_SpringBoot/Springboot-API-REST/`: microservicio backend de ventas.
-- `back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO/`: microservicio backend de despachos.
-- `.github/workflows/`: pipelines CI/CD para frontend, ventas y despachos.
-- `docker-compose.yml`: archivo principal para levantar el stack completo.
+- `front_despacho/`: contiene el frontend de la aplicación.
+- `back-Ventas_SpringBoot/Springboot-API-REST/`: contiene el backend del servicio de ventas.
+- `back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO/`: contiene el backend del servicio de despachos.
+- `.github/workflows/`: contiene los workflows de GitHub Actions utilizados para el despliegue.
+- `docker-compose.yml`: archivo utilizado para levantar los servicios del proyecto.
 
 ## Tecnologías utilizadas
 
@@ -29,15 +29,15 @@ El objetivo principal fue contenedorizarlos con Docker, levantar el stack median
 
 ## Contenedorización
 
-Cada componente cuenta con su propio Dockerfile.
+Cada componente del proyecto cuenta con su propio `Dockerfile`.
 
-El frontend utiliza una construcción multi-stage: primero se compila la aplicación con Node.js y luego se sirve el contenido estático mediante Nginx.
+En el caso del frontend, se utiliza una construcción multi-stage. Primero se compila la aplicación con Node.js y luego se sirve el contenido estático mediante Nginx.
 
-Los backends utilizan Dockerfile multi-stage con Maven para compilar el proyecto y Java para ejecutar el archivo `.jar`. Además, se aplica el principio de mínimo privilegio mediante la ejecución con un usuario no root.
+En los backends, también se utiliza una construcción multi-stage. Maven se encarga de compilar el proyecto y luego se ejecuta el archivo `.jar` en una imagen más liviana de Java. Además, los contenedores se ejecutan con un usuario no root, aplicando el principio de mínimo privilegio.
 
 ## Ejecución local con Docker Compose
 
-Para levantar el proyecto completo:
+Para levantar el proyecto completo, se debe ejecutar el siguiente comando desde la raíz del repositorio:
 
 ```bash
 docker compose up -d
@@ -57,9 +57,9 @@ docker compose down
 
 ## Persistencia de datos
 
-La base de datos MySQL utiliza un named volume llamado `db-data`, definido en el archivo `docker-compose.yml`.
+La base de datos MySQL utiliza un volumen llamado `db-data`, definido en el archivo `docker-compose.yml`.
 
-Este volumen permite conservar la información almacenada aunque el contenedor de MySQL sea detenido o creado nuevamente. Se eligió un named volume porque Docker lo administra directamente y facilita la continuidad operativa del sistema en un entorno de despliegue.
+Este volumen permite que la información almacenada no se pierda cuando el contenedor de MySQL se detiene o se vuelve a crear. Se utilizó un named volume porque es administrado directamente por Docker y facilita mantener la continuidad de los datos dentro del entorno de despliegue.
 
 ## Puertos utilizados
 
@@ -70,7 +70,7 @@ Este volumen permite conservar la información almacenada aunque el contenedor d
 
 ## Pipeline CI/CD
 
-El repositorio incluye workflows de GitHub Actions para automatizar el despliegue de cada componente:
+El repositorio incluye workflows de GitHub Actions para automatizar el despliegue de los componentes principales del proyecto:
 
 - `deploy-Frontend.yml`
 - `deploy-ventas.yml`
@@ -78,22 +78,22 @@ El repositorio incluye workflows de GitHub Actions para automatizar el despliegu
 
 Cada pipeline se activa al realizar un push sobre la rama `deploy`.
 
-El flujo general del pipeline es:
+El flujo general del pipeline es el siguiente:
 
-1. Descargar el código del repositorio.
-2. Iniciar sesión en Docker Hub usando GitHub Secrets.
-3. Construir la imagen Docker.
-4. Publicar la imagen en Docker Hub.
-5. Conectarse a la instancia EC2 mediante SSH.
-6. Descargar la imagen actualizada.
-7. Detener y eliminar el contenedor anterior.
-8. Ejecutar el nuevo contenedor.
+1. Se descarga el código del repositorio.
+2. Se inicia sesión en Docker Hub usando GitHub Secrets.
+3. Se construye la imagen Docker correspondiente.
+4. Se publica la imagen en Docker Hub.
+5. Se realiza una conexión SSH hacia la instancia EC2.
+6. Se descarga la imagen actualizada en el servidor.
+7. Se detiene y elimina el contenedor anterior.
+8. Se ejecuta el nuevo contenedor con la versión actualizada.
 
 ## Secrets utilizados
 
-Los pipelines utilizan GitHub Secrets para no exponer credenciales directamente en el código.
+Los pipelines utilizan GitHub Secrets para evitar que las credenciales queden escritas directamente en el código.
 
-Ejemplos de secrets utilizados:
+Algunos de los secrets utilizados son:
 
 - `DOCKER_USERNAME`
 - `DOCKER_PASSWORD`
@@ -107,17 +107,17 @@ Ejemplos de secrets utilizados:
 
 El frontend se despliega en una instancia EC2 accesible desde Internet mediante el puerto 80.
 
-Los backends se despliegan como contenedores Docker y se comunican con la base de datos MySQL. La comunicación entre los servicios se controla mediante configuración de puertos, variables de entorno y reglas de seguridad en AWS.
+Los backends se ejecutan como contenedores Docker y se conectan con la base de datos MySQL. La comunicación entre los servicios se controla mediante puertos, variables de entorno y reglas de seguridad configuradas en AWS.
 
 ## Pruebas recomendadas
 
-Verificar contenedores:
+Para verificar que los contenedores estén activos:
 
 ```bash
 docker ps
 ```
 
-Verificar logs:
+Para revisar los logs de los servicios:
 
 ```bash
 docker logs front-despacho-container
@@ -126,18 +126,20 @@ docker logs back-despachos-container
 docker logs mysql-db-container
 ```
 
-Verificar volúmenes:
+Para verificar los volúmenes creados:
 
 ```bash
 docker volume ls
 ```
 
-Verificar persistencia:
+Para comprobar la persistencia de datos:
 
 1. Ingresar o consultar datos desde la aplicación.
 2. Reiniciar los contenedores.
-3. Confirmar que los datos siguen disponibles.
+3. Verificar que los datos sigan disponibles.
 
 ## Justificación DevOps
 
-La solución aplica prácticas DevOps mediante el uso de contenedores Docker, automatización CI/CD con GitHub Actions, control de versiones con GitHub, despliegue en AWS EC2 y persistencia mediante volúmenes. Esto permite mejorar la trazabilidad, reducir errores manuales y facilitar futuras actualizaciones del sistema.
+En este proyecto se aplicaron prácticas DevOps mediante el uso de Docker, Docker Compose, GitHub Actions, control de versiones con GitHub, despliegue en AWS EC2 y persistencia con volúmenes.
+
+Estas herramientas permiten automatizar parte del proceso de despliegue, reducir errores manuales y facilitar futuras actualizaciones del sistema.
