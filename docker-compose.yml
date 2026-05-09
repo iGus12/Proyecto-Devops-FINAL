@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # 🗄️ Base de datos local MySQL
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db-container
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=tienda_ventas
+      - MYSQL_ROOT_PASSWORD=admin123
+    volumes:
+      - db-data:/var/lib/mysql
+    restart: always
+
+  # ☕ Backend de Ventas
+  back-ventas:
+    build: ./back-Ventas_SpringBoot/Springboot-API-REST
+    container_name: back-ventas-container
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_ENDPOINT=mysql-db
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=admin123
+    depends_on:
+      - mysql-db
+    restart: always
+
+  # ☕ Backend de Despachos
+  back-despachos:
+    build: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
+    container_name: back-despachos-container
+    ports:
+      - "8081:8081"
+    environment:
+      - DB_ENDPOINT=mysql-db
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=admin123
+    depends_on:
+      - mysql-db
+    restart: always
+
+  # ⚛️ Frontend de React
+  front-despacho:
+    build: ./front_despacho
+    container_name: front-despacho-container
+    ports:
+      - "80:80"
+    depends_on:
+      - back-despachos
+      - back-ventas
+    restart: always
+
+volumes:
+  db-data:
+    driver: local

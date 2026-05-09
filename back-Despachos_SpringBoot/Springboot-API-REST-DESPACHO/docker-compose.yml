@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  back-despachos:
+    build: .
+    container_name: back-despachos-container
+    ports:
+      - "8081:8080" 
+    environment:
+      - DB_ENDPOINT=${DB_ENDPOINT}  
+      - DB_PORT=3306
+    restart: always
