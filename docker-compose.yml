@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # 🗄️ Base de datos local MySQL
+  #Base de datos local MySQL
   mysql-db:
     image: mysql:8.0
     container_name: mysql-db-container
@@ -14,7 +14,7 @@ services:
       - db-data:/var/lib/mysql
     restart: always
 
-  # ☕ Backend de Ventas
+  #Backend de Ventas
   back-ventas:
     build: ./back-Ventas_SpringBoot/Springboot-API-REST
     container_name: back-ventas-container
@@ -29,7 +29,7 @@ services:
       - mysql-db
     restart: always
 
-  # ☕ Backend de Despachos
+  #Backend de Despachos
   back-despachos:
     build: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
     container_name: back-despachos-container
@@ -44,7 +44,7 @@ services:
       - mysql-db
     restart: always
 
-  # ⚛️ Frontend de React
+  #Frontend de React
   front-despacho:
     build: ./front_despacho
     container_name: front-despacho-container
