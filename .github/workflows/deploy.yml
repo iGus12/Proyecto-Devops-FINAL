@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main  
+
 jobs:
   build-and-push:
     name: Compilar y Subir a Amazon ECR
@@ -28,7 +29,7 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
 
-    # 4. Construir y subir el FRONTEND (Corregido con guion bajo)
+    # 4. Construir y subir el FRONTEND
     - name: Build y Push Frontend
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -57,3 +58,10 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+    # 7. DESPLIEGUE AUTOMÁTICO EN AWS ECS (El CD que faltaba)
+    - name: Forzar despliegue en AWS ECS
+      run: |
+        aws ecs update-service --cluster cluster-innovatech --service svc-frontend --force-new-deployment --region us-east-1
+        aws ecs update-service --cluster cluster-innovatech --service svc-back-ventas --force-new-deployment --region us-east-1
+        aws ecs update-service --cluster cluster-innovatech --service svc-back-despachos --force-new-deployment --region us-east-1
