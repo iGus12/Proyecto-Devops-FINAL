@@ -1,0 +1,33 @@
+{
+  "family": "task-back-ventas",
+  "taskRoleArn": "arn:aws:iam::020935060597:role/LabRole",
+  "executionRoleArn": "arn:aws:iam::020935060597:role/LabRole",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "back-ventas",
+      "image": "020935060597.dkr.ecr.us-east-1.amazonaws.com/back-ventas:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8081,
+          "hostPort": 8081,
+          "protocol": "tcp"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/task-back-ventas",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "512",
+  "memory": "1024"
+}
