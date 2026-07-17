@@ -1,8 +1,8 @@
-# 🚀 Proyecto Innovatech Chile — Plataforma Orquestada de Ventas y Despachos
+# Proyecto Innovatech Chile — Plataforma Orquestada de Ventas y Despachos
 
 Este repositorio contiene la solución DevOps completa para la automatización, empaquetado, integración continua y despliegue en la nube de la plataforma **Innovatech Chile**. La solución abarca desde el entorno de desarrollo local contenerizado hasta la infraestructura elástica, de alta disponibilidad y autoescalable en AWS.
 
-## 👥 Integrantes
+## Integrantes
 * **Christian Cabrera**
 * **Agustín Varas**
 * **Carla Vásquez**
@@ -11,7 +11,7 @@ Este repositorio contiene la solución DevOps completa para la automatización, 
 
 ---
 
-## 📐 Arquitectura de la Solución
+## Arquitectura de la Solución
 
 El sistema se compone de una arquitectura desacoplada de tres capas y microservicios:
 
